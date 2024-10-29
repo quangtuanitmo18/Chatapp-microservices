@@ -16,11 +16,10 @@ import {
   IconButton,
   Spinner,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
-import UserListItem from "../userAvatar/UserListItem";
+import http from "../../config/http";
 
 const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,7 +45,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await http.get(`/api/user?search=${search}`, config);
       console.log(data);
       setLoading(false);
       setSearchResult(data);
@@ -73,7 +72,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
+      const { data } = await http.put(
         `/api/chat/rename`,
         {
           chatId: selectedChat._id,
@@ -131,7 +130,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
+      const { data } = await http.put(
         `/api/chat/groupadd`,
         {
           chatId: selectedChat._id,
@@ -176,8 +175,8 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.put(
-        `/api/chat/groupremove`,
+      const { data } = await http.put(
+        `/api/chat/groupremoveuser`,
         {
           chatId: selectedChat._id,
           userId: user1._id,
@@ -187,7 +186,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
 
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
       setFetchAgain(!fetchAgain);
-      fetchMessages();
+      // fetchMessages();
       setLoading(false);
     } catch (error) {
       toast({
@@ -221,17 +220,20 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
 
           <ModalCloseButton />
           <ModalBody d="flex" flexDir="column" alignItems="center">
-            <Box w="100%" d="flex" flexWrap="wrap" pb={3}>
-              {selectedChat.users.map((u) => (
-                <UserBadgeItem
-                  key={u._id}
-                  user={u}
-                  admin={selectedChat.groupAdmin}
-                  handleFunction={() => handleRemove(u)}
-                />
-              ))}
+            <Box w="100%" d="flex" flexWrap="wrap" pb={3} flexDir="column">
+              <div>Members:</div>
+              <div>
+                {selectedChat.users.map((u) => (
+                  <UserBadgeItem
+                    key={u._id}
+                    user={u}
+                    admin={selectedChat.groupAdmin}
+                    handleFunction={() => handleRemove(u)}
+                  />
+                ))}
+              </div>
             </Box>
-            <FormControl d="flex">
+            {/* <FormControl d="flex">
               <Input
                 placeholder="Chat Name"
                 mb={3}
@@ -254,9 +256,9 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                 mb={1}
                 onChange={(e) => handleSearch(e.target.value)}
               />
-            </FormControl>
+            </FormControl> */}
 
-            {loading ? (
+            {/* {loading ? (
               <Spinner size="lg" />
             ) : (
               searchResult?.map((user) => (
@@ -266,13 +268,13 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                   handleFunction={() => handleAddUser(user)}
                 />
               ))
-            )}
+            )} */}
           </ModalBody>
-          <ModalFooter>
+          {/* <ModalFooter>
             <Button onClick={() => handleRemove(user)} colorScheme="red">
               Leave Group
             </Button>
-          </ModalFooter>
+          </ModalFooter> */}
         </ModalContent>
       </Modal>
     </>

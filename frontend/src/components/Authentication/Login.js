@@ -7,6 +7,7 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import { ChatState } from "../../Context/ChatProvider";
+import http from "../../config/http";
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -40,7 +41,7 @@ const Login = () => {
         },
       };
 
-      const { data } = await axios.post(
+      const { data } = await http.post(
         "/api/user/login",
         { email, password },
         config

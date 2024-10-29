@@ -1,0 +1,28 @@
+// {
+//   "root": true,
+//   "env": {
+//     "node": true,
+//     "es6": true
+//   },
+//   "extends": ["eslint:recommended", "plugin:import/errors", "plugin:import/warnings", "prettier"],
+//   "plugins": ["prettier", "import"],
+//   "rules": {
+//     "prettier/prettier": [
+//       "warn",
+//       {
+//         "arrowParens": "always",
+//         "semi": false,
+//         "trailingComma": "none",
+//         "tabWidth": 2,
+//         "endOfLine": "auto",
+//         "useTabs": false,
+//         "singleQuote": true,
+//         "printWidth": 120
+//       }
+//     ],
+//     "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+//     "no-console": "off",
+//     "import/no-unresolved": "error",
+//     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+//   }
+// }

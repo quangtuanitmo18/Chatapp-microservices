@@ -1,31 +1,45 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Stack, Text } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getSender } from "../config/ChatLogics";
 import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
-import { Button } from "@chakra-ui/react";
+import { Button, Input } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
+import http from "../config/http";
+import { debounce } from "lodash";
+import io from "socket.io-client";
+import { appConfig } from "../config/app";
+
+var socket, selectedChatCompare;
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
-
-  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+  const [loading, setLoading] = useState(false);
+  const { selectedChat, setSelectedChat, user, fetchChats, chats, setChats } =
+    ChatState();
 
   const toast = useToast();
 
-  const fetchChats = async () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  const handleSearchChats = async (search) => {
     // console.log(user._id);
+
     try {
+      setLoading(true);
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       };
 
-      const { data } = await axios.get("/api/chat", config);
+      const { data } = await http.get(
+        `/api/chat?search=${search === undefined ? "" : search}`,
+        config
+      );
+      setLoading(false);
       setChats(data);
     } catch (error) {
       toast({
@@ -39,9 +53,59 @@ const MyChats = ({ fetchAgain }) => {
     }
   };
 
+  const handleSelectChat = async (chat) => {
+    setSelectedChat(chat);
+    const isUserInChat = chat.users.findIndex((u) => u._id === user._id);
+    console.log(isUserInChat);
+    if (isUserInChat === -1) {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await http.put(
+          "/api/chat/groupadd",
+          {
+            chatId: chat._id,
+            userId: user._id,
+          },
+          config
+        );
+
+        socket.emit("new user join chat", {
+          sender: user,
+          chat: data,
+        });
+        setSelectedChat(data);
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to add user to group chat",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+    }
+  };
+  useEffect(() => {
+    socket = io(appConfig.apiUrl);
+    socket.on("connected", () => {});
+
+    // eslint-disable-next-line
+  }, []);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    console.log("fetchchats");
+    fetchChats();
+  }, []);
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
-    fetchChats();
+    handleSearchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
 
@@ -49,7 +113,6 @@ const MyChats = ({ fetchAgain }) => {
     <Box
       d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
-      alignItems="center"
       p={3}
       bg="white"
       w={{ base: "100%", md: "31%" }}
@@ -77,6 +140,15 @@ const MyChats = ({ fetchAgain }) => {
           </Button>
         </GroupChatModal>
       </Box>
+      <Box d="flex" pb={2}>
+        <Input
+          placeholder="Search by chat name"
+          mr={2}
+          onChange={debounce((e) => handleSearchChats(e.target.value), 500)}
+        />
+        {/* <Button onClick={handleSearchChats}>Go</Button> */}
+      </Box>
+
       <Box
         d="flex"
         flexDir="column"
@@ -87,37 +159,39 @@ const MyChats = ({ fetchAgain }) => {
         borderRadius="lg"
         overflowY="hidden"
       >
-        {chats ? (
-          <Stack overflowY="scroll">
-            {chats.map((chat) => (
-              <Box
-                onClick={() => setSelectedChat(chat)}
-                cursor="pointer"
-                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-                color={selectedChat === chat ? "white" : "black"}
-                px={3}
-                py={2}
-                borderRadius="lg"
-                key={chat._id}
-              >
-                <Text>
-                  {!chat.isGroupChat
-                    ? getSender(loggedUser, chat.users)
-                    : chat.chatName}
-                </Text>
-                {chat.latestMessage && (
+        {loading ? (
+          <ChatLoading />
+        ) : (
+          chats && (
+            <Stack overflowY="scroll">
+              {chats?.map((chat) => (
+                <Box
+                  onClick={() => handleSelectChat(chat)}
+                  cursor="pointer"
+                  bg={selectedChat?._id === chat?._id ? "#38B2AC" : "#E8E8E8"}
+                  color={selectedChat?._id === chat?._id ? "white" : "black"}
+                  px={3}
+                  py={2}
+                  borderRadius="lg"
+                  key={chat._id}
+                >
+                  <Text>
+                    {!chat.isGroupChat
+                      ? getSender(loggedUser, chat.users)
+                      : chat.chatName}
+                  </Text>
+                  {/* {chat.latestMessage && (
                   <Text fontSize="xs">
                     <b>{chat.latestMessage.sender.name} : </b>
                     {chat.latestMessage.content.length > 50
                       ? chat.latestMessage.content.substring(0, 51) + "..."
                       : chat.latestMessage.content}
                   </Text>
-                )}
-              </Box>
-            ))}
-          </Stack>
-        ) : (
-          <ChatLoading />
+                )} */}
+                </Box>
+              ))}
+            </Stack>
+          )
         )}
       </Box>
     </Box>
