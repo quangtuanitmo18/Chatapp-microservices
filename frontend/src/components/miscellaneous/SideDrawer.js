@@ -149,13 +149,13 @@ function SideDrawer() {
         </Text>
         <div>
           <Menu>
-            <MenuButton p={1}>
+            {/* <MenuButton p={1}>
               <NotificationBadge
                 count={notification.length}
                 effect={Effect.SCALE}
               />
               <BellIcon fontSize="2xl" m={1} />
-            </MenuButton>
+            </MenuButton> */}
             <MenuList pl={2}>
               {!notification.length && "No New Messages"}
               {notification.map((notif) => (
