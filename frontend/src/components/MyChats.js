@@ -1,7 +1,7 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Stack, Text } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getSender } from "../config/ChatLogics";
 import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
@@ -12,7 +12,7 @@ import { debounce } from "lodash";
 import io from "socket.io-client";
 import { appConfig } from "../config/app";
 
-var socket, selectedChatCompare;
+var socket;
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
@@ -92,7 +92,7 @@ const MyChats = ({ fetchAgain }) => {
     }
   };
   useEffect(() => {
-    socket = io(appConfig.apiUrl);
+    socket = io(appConfig.socketUrl);
     socket.on("connected", () => {});
 
     // eslint-disable-next-line

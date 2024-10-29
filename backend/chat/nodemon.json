@@ -1,0 +1,7 @@
+{
+  "watch": ["config", "controllers", "data", " models", "routes", ".env", "server.js"],
+  "ext": ".ts,.js,.yaml,.json",
+  "ignore": [],
+  "exec": "node server.js",
+  "verbose": true
+}
