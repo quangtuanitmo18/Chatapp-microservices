@@ -1,0 +1,22 @@
+# Ignore node modules as they will be installed in the Docker container
+node_modules
+npm-debug.log
+
+# Ignore build output (it will be created within the container)
+build
+dist
+
+# Ignore system files
+.DS_Store
+*.swp
+
+# Ignore git files
+.git
+.gitignore
+
+# Ignore Dockerfile and docker-compose files if not needed inside the container
+Dockerfile
+docker-compose.yml
+
+# Ignore other temporary files
+*.tmp

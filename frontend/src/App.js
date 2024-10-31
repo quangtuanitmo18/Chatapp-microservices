@@ -2,6 +2,7 @@ import "./App.css";
 import Homepage from "./Pages/Homepage";
 import { Route } from "react-router-dom";
 import Chatpage from "./Pages/Chatpage";
+import { appConfig } from "./config/app";
 
 function App() {
   return (

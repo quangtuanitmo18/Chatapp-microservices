@@ -1,0 +1,69 @@
+version: "3.8"
+
+services:
+  # MongoDB Service
+  database:
+    image: mongo:latest
+    container_name: database
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/database
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo_user
+      MONGO_INITDB_ROOT_PASSWORD: mongo_password
+    networks:
+      - app-network
+    restart: always
+
+  # Website Service
+  backend-website:
+    build:
+      context: ./backend/website
+      dockerfile: Dockerfile
+    container_name: backend-website
+    ports:
+      - "5000:5000" # Expose only if needed
+    networks:
+      - app-network
+    depends_on:
+      - database
+
+  # Chat Service (WebSocket functionality)
+  backend-chat:
+    build:
+      context: ./backend/chat
+      dockerfile: Dockerfile
+    container_name: backend-chat
+    # environment:
+    #   - MONGO_URL=mongodb://mongo_user:mongo_password@db:27017
+    #   - JWT_SECRET=your_jwt_secret
+    ports:
+      - "4000:4000" # Expose only if needed
+    networks:
+      - app-network
+    depends_on:
+      - database
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:80" # Serves the React app on port 3000
+    networks:
+      - app-network
+    depends_on:
+      - backend-website
+      - backend-chat
+
+# Define shared network and volume
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
