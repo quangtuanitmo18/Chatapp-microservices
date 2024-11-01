@@ -19,11 +19,12 @@ RUN npm run build
 # Step 2: Serve the React app with a lightweight HTTP server
 FROM nginx:alpine
 
-# copy nginx.conf
-COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy the build output to Nginx's web root
 COPY --from=build /app/build /usr/share/nginx/html
+
+# copy nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80 to serve the app
 EXPOSE 80
