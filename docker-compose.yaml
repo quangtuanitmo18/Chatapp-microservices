@@ -59,6 +59,24 @@ services:
       - backend-website
       - backend-chat
 
+  # Nginx Service (API Gateway)
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf # Nginx configuration file
+    networks:
+      - app-network
+    depends_on:
+      - frontend
+      - backend-website
+      - backend-chat
+
 # Define shared network and volume
 networks:
   app-network:

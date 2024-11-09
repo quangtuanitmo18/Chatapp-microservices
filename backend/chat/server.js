@@ -18,15 +18,11 @@ app.use(
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    // origin: 'http://localhost:3000'
     origin: '*'
-    // credentials: true
   }
 })
 
-app.use(express.json()) // to accept json data
-
-// --------------------------deployment------------------------------
+app.use(express.json())
 
 const __dirname1 = path.resolve()
 
@@ -39,8 +35,6 @@ if (process.env.NODE_ENV === 'production') {
     res.send('API is running..')
   })
 }
-
-// --------------------------deployment------------------------------
 
 const PORT = process.env.PORT
 

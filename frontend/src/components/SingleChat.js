@@ -116,6 +116,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }
   };
+  console.log(appConfig.socketUrl);
 
   useEffect(() => {
     socket = io(appConfig.socketUrl);
