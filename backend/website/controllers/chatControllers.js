@@ -46,7 +46,7 @@ const accessChat = asyncHandler(async (req, res) => {
 //@description     Fetch all chats for a user
 //@route           GET /api/chat/
 //@access          Protected
-const fetchChats = asyncHandler(async (req, res) => {
+const getGroupChats = asyncHandler(async (req, res) => {
   // filet chats by chatName
   const keyword = req.query.search
     ? {
@@ -163,7 +163,7 @@ const removeFromGroup = asyncHandler(async (req, res) => {
 })
 
 // @desc    Remove  Group Chat
-// @route   PUT /api/chat/groupremove
+// @route   DELETE /api/chat/groupremove
 // @access  Protected
 
 const removeGroup = asyncHandler(async (req, res) => {
@@ -220,7 +220,7 @@ const addToGroup = asyncHandler(async (req, res) => {
 
 module.exports = {
   accessChat,
-  fetchChats,
+  getGroupChats,
   createGroupChat,
   renameGroup,
   addToGroup,
