@@ -1,21 +1,21 @@
 import { FormControl } from "@chakra-ui/form-control";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
-import "./styles.css";
 import { IconButton, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
-import { getSender, getSenderFull } from "../config/ChatLogics";
 import { useEffect, useState } from "react";
-import { ArrowBackIcon, DeleteIcon } from "@chakra-ui/icons";
-import ProfileModal from "./miscellaneous/ProfileModal";
-import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
+import { getSender, getSenderFull } from "../config/ChatLogics";
+import ProfileModal from "./miscellaneous/ProfileModal";
+import ScrollableChat from "./ScrollableChat";
+import "./styles.css";
 
 import io from "socket.io-client";
-import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
-import { ChatState } from "../Context/ChatProvider";
 import { appConfig } from "../config/app";
+import { ChatState } from "../Context/ChatProvider";
 import DeleteChatModal from "./miscellaneous/DeleteChatModal";
+import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {

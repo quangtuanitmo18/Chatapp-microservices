@@ -1,16 +1,16 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Stack, Text } from "@chakra-ui/layout";
+import { Button, Input } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
+import { debounce } from "lodash";
 import { useEffect, useState } from "react";
+import io from "socket.io-client";
+import { ChatState } from "../Context/ChatProvider";
 import { getSender } from "../config/ChatLogics";
+import { appConfig } from "../config/app";
+import http from "../config/http";
 import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
-import { Button, Input } from "@chakra-ui/react";
-import { ChatState } from "../Context/ChatProvider";
-import http from "../config/http";
-import { debounce } from "lodash";
-import io from "socket.io-client";
-import { appConfig } from "../config/app";
 
 var socket;
 

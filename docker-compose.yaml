@@ -5,10 +5,8 @@ services:
   database:
     image: mongo:latest
     container_name: database
-    ports:
-      - "27017:27017"
     volumes:
-      - D:\laragon\www\nodejs\web-BaoLinh\lab-baolinh\chatapp-baolinh\dump:/data/db
+      - mongo_data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo_user
       MONGO_INITDB_ROOT_PASSWORD: mongo_password
@@ -22,8 +20,6 @@ services:
       context: ./backend/website
       dockerfile: Dockerfile
     container_name: backend-website
-    ports:
-      - "5000:5000" # Expose only if needed
     networks:
       - app-network
     depends_on:
@@ -35,11 +31,6 @@ services:
       context: ./backend/chat
       dockerfile: Dockerfile
     container_name: backend-chat
-    # environment:
-    #   - MONGO_URL=mongodb://mongo_user:mongo_password@db:27017
-    #   - JWT_SECRET=your_jwt_secret
-    ports:
-      - "4000:4000" # Expose only if needed
     networks:
       - app-network
     depends_on:
@@ -51,8 +42,6 @@ services:
       context: ./Frontend
       dockerfile: Dockerfile
     container_name: frontend
-    ports:
-      - "3000:80" # Serves the React app on port 3000
     networks:
       - app-network
     depends_on:
@@ -81,3 +70,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mongo_data:
